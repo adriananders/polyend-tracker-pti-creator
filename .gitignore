@@ -1,0 +1,5 @@
+.idea/
+.DS_Store
+.coverage
+polyend_tracker_pti_creator.egg-info/
+build/
