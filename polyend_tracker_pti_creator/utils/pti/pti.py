@@ -1,5 +1,4 @@
 import os
-from io import BytesIO
 from typing import List, Dict
 from pydub.audio_segment import AudioSegment
 from polyend_tracker_pti_creator.utils.audio.audio import Audio
@@ -74,9 +73,7 @@ class PTI:
                 settings = self.set_header_slice_points(settings=settings, slice_points=file['slice_points'])
             header = Header(settings)
             pti_data = header.data_bytes
-            wav_io = BytesIO()
-            file['audio'].export(wav_io, format="wav")
-            wav_bytes = wav_io.getvalue()
+            wav_bytes = file['audio'].raw_data
             pti_data.extend(wav_bytes)
             with open(os.path.join(
                     file['destination_path'],
