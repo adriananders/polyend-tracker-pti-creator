@@ -17,7 +17,7 @@ class Audio:
     def loop_points(self) -> List[int]:
         with open(self.path, "rb") as file:
             try:
-                frame_count = AudioSegment.from_file(self.path, '.wav').frame_count()
+                frame_count = AudioSegment.from_file(self.path, format='wav').frame_count()
                 riff_chunk = RiffChunkExtended.from_file(file)
                 sample_chunk = riff_chunk.sub_chunks[RiffChunkExtended.CHUNK_SAMPLE]
                 return [
@@ -30,7 +30,7 @@ class Audio:
     @LazyProperty
     def audio_segment(self) -> AudioSegment:
         try:
-            audio_segment = AudioSegment.from_file(self.path, '.wav')
+            audio_segment = AudioSegment.from_file(self.path, format='wav')
             if audio_segment.frame_rate != 44100:
                 audio_segment = audio_segment.set_frame_rate(44100)
             if audio_segment.channels != 1:

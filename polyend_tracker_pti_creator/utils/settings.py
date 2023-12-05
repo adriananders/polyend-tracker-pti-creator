@@ -31,7 +31,7 @@ class Settings:
         self.args = args
         for index, file in enumerate(self.files):
             file['destination_path'] = self.destination
-            file['destination_file_name'] = f"{self.file_name.lower().replace('.pti', '')}" \
+            file['destination_file_name'] = f"{self.file_name.replace('.pti', '')}" \
                                             f"{index + 1 if self.batch and self.mode != 'merge' else ''}" \
                 if self.file_name else file['source_file_name']
             file['destination_extension'] = '.pti'
@@ -90,7 +90,7 @@ class Settings:
     def instrument_name(self) -> str:
         return self.args.instrument_name \
             if self.args.instrument_name or not self.args.file_name \
-            else self.args.file_name.lower().replace('.pti', '')
+            else self.args.file_name.replace('.pti', '')
 
     @LazyProperty
     def file_name(self) -> str:
@@ -109,8 +109,8 @@ class Settings:
         files = [
             {
                 'source_path': os.path.dirname(file),
-                'source_file_name': pathlib.Path(os.path.basename(file)).stem.lower(),
-                'source_extension': pathlib.Path(os.path.basename(file)).suffix.lower()
+                'source_file_name': pathlib.Path(os.path.basename(file)).stem,
+                'source_extension': pathlib.Path(os.path.basename(file)).suffix
             } for file in source_files if pathlib.Path(os.path.basename(file)).suffix.lower() == '.wav'
         ]
 
