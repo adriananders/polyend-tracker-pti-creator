@@ -67,6 +67,7 @@ class TestPTI(TestCase):
                 'instrument_name':  'testslice',
                 'sample_length': 42689,
                 'sample_playback': 5,
+                'number_of_slices': 2,
                 'slice_02_adjust': 32768
             })
             actual_header_data = struct.unpack(header.format, file_content[:392])
@@ -115,8 +116,8 @@ class TestPTI(TestCase):
             header = Header({
                 'instrument_name':  'test',
                 'sample_length': 21344,
-                'loop_start': 13968,
-                'loop_end': 65532,
+                'loop_start': 1,
+                'loop_end': 65534,
             })
             actual_header_data = struct.unpack(header.format, file_content[:392])
             expected_header_data = header.data

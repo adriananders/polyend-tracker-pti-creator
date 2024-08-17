@@ -1,12 +1,13 @@
 # pylint: disable=consider-using-generator
 import struct
+from copy import deepcopy
 from lazy_property import LazyProperty
 from polyend_tracker_pti_creator.utils.pti.constants import PTI_HEADER_DEFINITION
 
 
 class Header:
     def __init__(self, settings):
-        self.definition = PTI_HEADER_DEFINITION.copy()
+        self.definition = deepcopy(PTI_HEADER_DEFINITION)
         for key, value in settings.items():
             if isinstance(value, str):
                 value = self.encode_string(value)

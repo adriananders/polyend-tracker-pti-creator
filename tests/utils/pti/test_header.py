@@ -22,6 +22,7 @@ class TestHeader(TestCase):
         self.assertEqual(len(PTI_HEADER_DEFINITION.keys()), len(header.data))
 
     def test_data_bytes(self) -> None:
+        Header({})
         header = Header({
                 'sample_length': 926110,
                 'sample_playback': 0,
@@ -31,6 +32,8 @@ class TestHeader(TestCase):
                 'gran_pos_env_attack': 3000,
                 'finetune_env_attack': 3000,
             })
+        header_empty = Header({})
         with open('./tests/utils/files/default_header.pti', mode='rb') as header_file:
             expected = bytearray(header_file.read())
             self.assertEqual(expected, header.data_bytes)
+            self.assertNotEquals(header.data_bytes, header_empty.data_bytes)
