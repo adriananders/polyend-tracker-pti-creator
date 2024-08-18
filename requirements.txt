@@ -1,4 +1,4 @@
 wavchunk == 1.0.1
-wave-chunk-parser == 1.0.4
+wave-chunk-parser == 1.5.0
 pydub == 0.25.1
 lazy-property == 0.0.1

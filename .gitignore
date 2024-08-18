@@ -6,3 +6,5 @@ build/
 *.pyc
 env/
 venv/
+test/integ
+tests/utils/files/integ/

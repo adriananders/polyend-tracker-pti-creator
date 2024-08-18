@@ -1,13 +1,12 @@
 # pylint: disable=too-many-instance-attributes, too-many-arguments, unused-variable
 from __future__ import annotations
+from wave_chunk_parser.chunks import RiffChunk, Chunk
+from typing import BinaryIO
 from struct import unpack, pack
-from typing import BinaryIO, List, Dict
 from wave_chunk_parser.exceptions import (
     InvalidHeaderException,
 )
-from wave_chunk_parser.chunks import Chunk, RiffChunk, FormatChunk, DataChunk, CartChunk
 from wave_chunk_parser.utils import seek_and_read
-
 
 class SampleChunk(Chunk):
     """
@@ -248,10 +247,10 @@ class SampleChunk(Chunk):
         return self.__first_loop_play_count
 
     @property
-    def get_name(self) -> str:
+    def get_name(self) -> bytes:
         return self.HEADER_SAMPLE
 
-    def to_bytes(self) -> List[bytes]:
+    def to_bytes(self) -> bytes:
 
         # Build up our chunk
 
@@ -276,33 +275,10 @@ class SampleChunk(Chunk):
             self.first_loop_play_count,
         )
 
-
 class RiffChunkExtended(RiffChunk):
     CHUNK_SAMPLE = b"smpl"
 
-    RiffChunk.CHUNK_HEADER_MAP = {
-        RiffChunk.CHUNK_FORMAT: FormatChunk,
-        RiffChunk.CHUNK_DATA: DataChunk,
-        RiffChunk.CHUNK_CART: CartChunk,
-        CHUNK_SAMPLE: SampleChunk,
-    }
-
-    def __init__(self, sub_chunks: Dict[str, Chunk]) -> None:
-        super().__init__(sub_chunks)
-        self.__sub_chunks = sub_chunks
-
-    @property
-    def sub_chunks(self) -> Dict[str, Chunk]:
-        return self.__sub_chunks
-
     @classmethod
-    def from_file(cls, file_handle: BinaryIO, offset: int = 0) -> Chunk:
-        return RiffChunk.from_file(file_handle, offset)
-
-    def to_bytes(self) -> List[bytes]:
-        data = RiffChunk(self.__sub_chunks).to_bytes()
-        if self.CHUNK_SAMPLE in self.sub_chunks:
-            data += self.sub_chunks.get(self.CHUNK_SAMPLE).to_bytes()
-        header_length = 8
-        replacement_header = pack("<4sI", self.HEADER_RIFF, len(data) - header_length)
-        return replacement_header + data[header_length:]
+    def from_file(cls, file_handle: BinaryIO, offset: int = 0, **kwargs) -> Chunk:
+        kwargs["user_chunks"] = { cls.CHUNK_SAMPLE: SampleChunk }
+        return super().from_file(file_handle, offset, **kwargs)

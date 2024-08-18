@@ -229,7 +229,7 @@ class TestRiffChunkExtended(TestCase):
             self.assertEqual(chunk.get_name, b"WAVE")
             self.assertIsNotNone(chunk.sub_chunks)
             for expected_chunk in expected_chunks:
-                self.assertIn(expected_chunk, chunk.sub_chunks)
+                self.assertIn(expected_chunk, [obj.get_name for obj in chunk.sub_chunks])
 
     def test_encode_wave(self) -> None:
         """
@@ -237,14 +237,15 @@ class TestRiffChunkExtended(TestCase):
         """
 
         # Arrange
-
-        chunks = {}
-
-        chunks[RiffChunkExtended.CHUNK_FORMAT] = FormatChunk(
-            WaveFormat.PCM, False, 1, 44100, 16
-        )
-
-        chunks[RiffChunkExtended.CHUNK_SAMPLE] = SampleChunk(
+        with open(os.path.join(DIR_PATH, "../files/test_tone.wav"), "rb") as in_file:
+            samples = np.memmap(
+                in_file, dtype=np.dtype("<i2"), mode="c", shape=(37586, 1), offset=44
+            )
+        chunks = [FormatChunk(
+            WaveFormat.PCM, None, 1, 44100, 16
+        ),
+            DataChunk(samples),
+            SampleChunk(
             0,
             0,
             22675,
@@ -260,14 +261,7 @@ class TestRiffChunkExtended(TestCase):
             37585,
             0,
             0,
-        )
-
-        with open(os.path.join(DIR_PATH, "../files/test_tone.wav"), "rb") as in_file:
-            samples = np.memmap(
-                in_file, dtype=np.dtype("<i2"), mode="c", shape=(37586, 1), offset=44
-            )
-
-        chunks[RiffChunkExtended.CHUNK_DATA] = DataChunk(samples)
+        )]
 
         riff = RiffChunkExtended(chunks)
 

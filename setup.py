@@ -91,7 +91,7 @@ class InstallPyCommand(setuptools.command.install.install):
 
 setup(
     name="polyend_tracker_pti_creator",
-    version="0.0.1",
+    version="0.1.0",
     packages=[
         "polyend_tracker_pti_creator",
         "polyend_tracker_pti_creator.utils",
